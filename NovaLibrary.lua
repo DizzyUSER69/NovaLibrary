@@ -1,5 +1,5 @@
 -- NovaLibrary - Skonsolidowany Skrypt (Loadstring Version)
--- Wersja 1.0.1 - Dopracowany styl Potassium i ulepszona obsługa błędów
+-- Wersja 1.0.2 - Poprawka błędu 'attempt to call a nil value' i dopracowany styl Potassium
 --
 -- Aby użyć, skopiuj i wklej do swojego executora:
 -- local success, result = pcall(function() return loadstring(game:HttpGet("https://raw.githubusercontent.com/DizzyUSER69/NovaLibrary/main/NovaLibrary.lua"))() end)
@@ -14,7 +14,7 @@
 
 local Globals = {}
 
-Globals.VERSION = "1.0.1"
+Globals.VERSION = "1.0.2"
 Globals.LIBRARY_NAME = "NovaLibrary"
 
 Globals.ANIMATION_SPEED = 0.2
@@ -40,7 +40,7 @@ end
 
 function Globals.AddBorder(instance, color, width)
 	local stroke = Globals.CreateGuiElement("UIStroke", instance, "Border")
-	stroke.Color = color or Color3.fromRGB(70, 70, 85)
+	stroke.Color = color or Color3.fromRGB(50, 50, 55)
 	stroke.Thickness = width or Globals.BORDER_WIDTH
 	return stroke
 end
@@ -111,8 +111,8 @@ Globals.TweenService = game:GetService("TweenService")
 Globals.Players = game:GetService("Players")
 
 -- Ulepszony dostęp do LocalPlayer i PlayerGui
-Globals.LocalPlayer = Globals.Players.LocalPlayer or (Globals.RunService:IsClient() and Globals.Players.LocalPlayer)
-Globals.PlayerGui = Globals.LocalPlayer and Globals.LocalPlayer:WaitForChild("PlayerGui") or game:GetService("CoreGui")
+Globals.LocalPlayer = Globals.Players.LocalPlayer
+Globals.PlayerGui = Globals.LocalPlayer and Globals.LocalPlayer:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
 
 -- ============================================
 -- ZARZĄDZANIE MOTYWAMI (ThemeManager Module)
@@ -496,7 +496,7 @@ function Button:SetupEventHandlers()
 		if gameProcessed then return end
 		if input.UserInputType == Enum.UserInputType.MouseButton1 and self.IsEnabled then
 			self.IsPressed = true; self:UpdateVisuals()
-		end)
+		end
 	end)
 	self.MainFrame.InputEnded:Connect(function(input, gameProcessed)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
