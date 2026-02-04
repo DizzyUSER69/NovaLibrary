@@ -969,64 +969,121 @@ function NovaLibrary:Log(msg, level) Globals.Log(msg, level) end
 
 NovaLibrary:Init()
 
--- Demo Logic
-local mainWindow = NovaLibrary:CreateWindow("NovaLibrary v2.0 Demo", {X = 50, Y = 50}, {Width = 600, Height = 500})
+-- ============================================
+-- SZABLON DEWELOPERSKI - EDYTUJ PONIŻEJ
+-- ============================================
+-- Ten szablon zawiera gotowe kategorie (Tabs) i przykładowe komponenty.
+-- Zastąp funkcjonalność poniżej własnymi skryptami.
 
--- Utwórz zakładki
-local tab1 = mainWindow:CreateTab("Komponenty")
-local tab2 = mainWindow:CreateTab("Ustawienia")
+local mainWindow = NovaLibrary:CreateWindow("Nova Script", {X = 50, Y = 50}, {Width = 600, Height = 500})
 
--- Tab 1: Komponenty
-NovaLibrary:CreateButton("Kliknij mnie!", tab1.Content, function() 
-	NovaLibrary:CreateNotification("Sukces!", "Przycisk został kliknięty!", 3)
+-- ============================================
+-- KATEGORIA: COMBAT (Walka)
+-- ============================================
+local tabCombat = mainWindow:CreateTab("Combat")
+
+-- Przykład: Przycisk
+NovaLibrary:CreateButton("Przykład Przycisk", tabCombat.Content, function()
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:CreateNotification("Combat", "Przycisk wciśnięty!", 2)
 end)
 
-NovaLibrary:CreateToggle("Włącz opcję", tab1.Content, function(state)
-	NovaLibrary:CreateNotification("Toggle", "Stan: " .. tostring(state), 2)
+-- Przykład: Przełącznik
+NovaLibrary:CreateToggle("Przykład Toggle", tabCombat.Content, function(state)
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:Log("Toggle: " .. tostring(state), "INFO")
 end)
 
-NovaLibrary:CreateSlider("Głośność", tab1.Content, 0, 100, 50, function(value)
-	NovaLibrary:Log("Głośność: " .. tostring(math.floor(value)), "INFO")
+-- Przykład: Suwak
+NovaLibrary:CreateSlider("Przykład Slider", tabCombat.Content, 0, 100, 50, function(value)
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:Log("Wartość: " .. tostring(math.floor(value)), "INFO")
 end)
 
-NovaLibrary:CreateDropdown("Wybierz opcję", tab1.Content, {"Opcja 1", "Opcja 2", "Opcja 3"}, function(selected)
-	NovaLibrary:CreateNotification("Dropdown", "Wybrano: " .. selected, 2)
+-- ============================================
+-- KATEGORIA: VISUALS (Wizualizacja)
+-- ============================================
+local tabVisuals = mainWindow:CreateTab("Visuals")
+
+-- Przykład: Przycisk
+NovaLibrary:CreateButton("Przykład Przycisk", tabVisuals.Content, function()
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:CreateNotification("Visuals", "Przycisk wciśnięty!", 2)
 end)
 
-NovaLibrary:CreateTextBox("Wiadomość", tab1.Content, "Wpisz coś...", function(text)
+-- Przykład: Przełącznik
+NovaLibrary:CreateToggle("Przykład Toggle", tabVisuals.Content, function(state)
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:Log("Toggle: " .. tostring(state), "INFO")
+end)
+
+-- Przykład: Lista rozwijana
+NovaLibrary:CreateDropdown("Przykład Dropdown", tabVisuals.Content, {"Opcja 1", "Opcja 2", "Opcja 3"}, function(selected)
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:Log("Wybrano: " .. selected, "INFO")
+end)
+
+-- ============================================
+-- KATEGORIA: MISC (Różne)
+-- ============================================
+local tabMisc = mainWindow:CreateTab("Misc")
+
+-- Przykład: Przycisk
+NovaLibrary:CreateButton("Przykład Przycisk", tabMisc.Content, function()
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:CreateNotification("Misc", "Przycisk wciśnięty!", 2)
+end)
+
+-- Przykład: Pole tekstowe
+NovaLibrary:CreateTextBox("Przykład TextBox", tabMisc.Content, "Wpisz tekst...", function(text)
+	-- Tutaj wklej swoją funkcję
 	NovaLibrary:Log("Tekst: " .. text, "INFO")
 end)
 
--- Tab 2: Ustawienia
-NovaLibrary:CreateButton("Zapisz ustawienia", tab2.Content, function()
-	NovaLibrary:CreateNotification("Zapisano", "Ustawienia zostały zapisane", 2)
+-- Przykład: Przełącznik
+NovaLibrary:CreateToggle("Przykład Toggle", tabMisc.Content, function(state)
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:Log("Toggle: " .. tostring(state), "INFO")
 end)
 
-NovaLibrary:CreateButton("Resetuj ustawienia", tab2.Content, function()
-	NovaLibrary:CreateNotification("Reset", "Ustawienia zostały zresetowane", 2)
+-- ============================================
+-- KATEGORIA: SETTINGS (Ustawienia)
+-- ============================================
+local tabSettings = mainWindow:CreateTab("Settings")
+
+-- Przykład: Przycisk
+NovaLibrary:CreateButton("Przykład Przycisk", tabSettings.Content, function()
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:CreateNotification("Settings", "Przycisk wciśnięty!", 2)
 end)
 
-NovaLibrary:CreateToggle("Tryb ciemny", tab2.Content, function(state)
-	if state then 
-		NovaLibrary:LoadTheme("Dark")
-	else 
-		NovaLibrary:LoadTheme("Light") 
-	end
+-- Przykład: Przełącznik
+NovaLibrary:CreateToggle("Przykład Toggle", tabSettings.Content, function(state)
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:Log("Toggle: " .. tostring(state), "INFO")
 end)
 
+-- Przykład: Suwak
+NovaLibrary:CreateSlider("Przykład Slider", tabSettings.Content, 0, 100, 50, function(value)
+	-- Tutaj wklej swoją funkcję
+	NovaLibrary:Log("Wartość: " .. tostring(math.floor(value)), "INFO")
+end)
+
+-- ============================================
+-- OBSŁUGA ZDARZEŃ OKNA
+-- ============================================
 mainWindow:OnWindowClose(function()
-	NovaLibrary:Log("Okno zostało zamknięte", "INFO")
+	NovaLibrary:Log("Skrypt zamknięty", "INFO")
 end)
 
 mainWindow:OnWindowMinimize(function(isMinimized)
 	if isMinimized then
-		NovaLibrary:Log("Okno zostało zminimalizowane", "INFO")
+		NovaLibrary:Log("Skrypt zminimalizowany", "INFO")
 	else
-		NovaLibrary:Log("Okno zostało przywrócone", "INFO")
+		NovaLibrary:Log("Skrypt przywrócony", "INFO")
 	end
 end)
 
-NovaLibrary:Log("NovaLibrary v2.0 Demo załadowana pomyślnie!", "INFO")
-print("NovaLibrary v2.0 załadowana!")
+NovaLibrary:Log("Skrypt załadowany pomyślnie!", "INFO")
 
 return NovaLibrary
