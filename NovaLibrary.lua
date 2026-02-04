@@ -1,8 +1,10 @@
 -- NovaLibrary - Skonsolidowany Skrypt (Loadstring Version)
--- Wersja 1.0.0
+-- Wersja 1.0.1 - Dopracowany styl Potassium i ulepszona obsługa błędów
 --
 -- Aby użyć, skopiuj i wklej do swojego executora:
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/DizzyUSER69/NovaLibrary/main/NovaLibrary.lua"))()
+-- local success, result = pcall(function() return loadstring(game:HttpGet("https://raw.githubusercontent.com/DizzyUSER69/NovaLibrary/main/NovaLibrary.lua"))() end)
+-- if not success then warn("NovaLibrary Loadstring Error: " .. tostring(result)) return end
+-- local NovaLibrary = result
 --
 -- Ten skrypt zawiera wszystkie moduły NovaLibrary (Core, Components) w jednym pliku.
 
@@ -12,7 +14,7 @@
 
 local Globals = {}
 
-Globals.VERSION = "1.0.0"
+Globals.VERSION = "1.0.1"
 Globals.LIBRARY_NAME = "NovaLibrary"
 
 Globals.ANIMATION_SPEED = 0.2
@@ -107,7 +109,9 @@ Globals.UserInputService = game:GetService("UserInputService")
 Globals.RunService = game:GetService("RunService")
 Globals.TweenService = game:GetService("TweenService")
 Globals.Players = game:GetService("Players")
-Globals.LocalPlayer = Globals.Players.LocalPlayer or nil
+
+-- Ulepszony dostęp do LocalPlayer i PlayerGui
+Globals.LocalPlayer = Globals.Players.LocalPlayer or (Globals.RunService:IsClient() and Globals.Players.LocalPlayer)
 Globals.PlayerGui = Globals.LocalPlayer and Globals.LocalPlayer:WaitForChild("PlayerGui") or game:GetService("CoreGui")
 
 -- ============================================
@@ -117,21 +121,21 @@ Globals.PlayerGui = Globals.LocalPlayer and Globals.LocalPlayer:WaitForChild("Pl
 local ThemeManager = {}
 
 ThemeManager.DefaultTheme = {
-	Background = Globals.RGB(20, 20, 25),
-	Foreground = Globals.RGB(40, 40, 50),
-	Surface = Globals.RGB(30, 30, 40),
-	TextPrimary = Globals.RGB(230, 230, 240),
-	TextSecondary = Globals.RGB(150, 150, 160),
+	Background = Globals.RGB(17, 17, 17),        -- Bardzo ciemne tło (prawie czarne)
+	Foreground = Globals.RGB(30, 30, 35),        -- Jaśniejszy tło dla elementów
+	Surface = Globals.RGB(25, 25, 30),           -- Powierzchnia elementów
+	TextPrimary = Globals.RGB(230, 230, 240),    -- Główny tekst (jasny)
+	TextSecondary = Globals.RGB(150, 150, 160),  -- Pomocniczy tekst (szary)
 	Accent = Globals.RGB(180, 180, 180),         -- Szary akcent (Potassium Style)
-	AccentDark = Globals.RGB(120, 120, 120),
-	AccentLight = Globals.RGB(220, 220, 220),
-	Success = Globals.RGB(100, 200, 100),
-	Warning = Globals.RGB(255, 200, 100),
-	Error = Globals.RGB(255, 100, 100),
-	Hover = Globals.RGB(60, 60, 80),
-	Active = Globals.RGB(100, 100, 100),         -- Ciemny szary dla aktywnych
-	Disabled = Globals.RGB(80, 80, 90),
-	BorderColor = Globals.RGB(70, 70, 85),
+	AccentDark = Globals.RGB(120, 120, 120),      -- Ciemniejszy szary akcent
+	AccentLight = Globals.RGB(220, 220, 220),    -- Jaśniejszy szary akcent
+	Success = Globals.RGB(100, 200, 100),        -- Zielony (sukces)
+	Warning = Globals.RGB(255, 200, 100),        -- Pomarańczowy (ostrzeżenie)
+	Error = Globals.RGB(255, 100, 100),          -- Czerwony (błąd)
+	Hover = Globals.RGB(45, 45, 50),             -- Kolor przy najechaniu (subtelnie jaśniejszy)
+	Active = Globals.RGB(60, 60, 65),            -- Kolor aktywny (ciemniejszy szary)
+	Disabled = Globals.RGB(80, 80, 90),          -- Kolor wyłączony
+	BorderColor = Globals.RGB(50, 50, 55),       -- Kolor obramowania (ciemniejszy, subtelny)
 	BorderWidth = 1,
 	Font = Enum.Font.GothamSemibold,
 	FontSize = 14,
@@ -421,7 +425,11 @@ function Window:SetupEventHandlers()
 	end)
 end
 
-function Window:Close() self.MainFrame:Destroy() end
+function Window:Close() 
+	if self.OnClose then self.OnClose() end
+	self.MainFrame:Destroy() 
+end
+
 function Window:Minimize()
 	self.IsMinimized = not self.IsMinimized
 	if self.IsMinimized then
@@ -431,6 +439,7 @@ function Window:Minimize()
 		Utilities.AnimateSize(self.MainFrame, self.Size.Width, self.Size.Height, 0.3)
 		self.ContentFrame.Visible = true
 	end
+	if self.OnMinimize then self.OnMinimize(self.IsMinimized) end
 end
 
 function Window:OnWindowClose(callback) self.OnClose = callback end
@@ -472,6 +481,8 @@ function Button:CreateGUI()
 	self.TextLabel.TextColor3 = ThemeManager:GetColor("TextPrimary")
 	self.TextLabel.Font = ThemeManager:Get("Font")
 	self.TextLabel.TextSize = ThemeManager:Get("FontSize")
+	self.TextLabel.TextXAlignment = Enum.TextXAlignment.Center
+	self.TextLabel.TextYAlignment = Enum.TextYAlignment.Center
 	self.TextLabel.ZIndex = 2
 	self:SetupEventHandlers()
 end
@@ -485,7 +496,7 @@ function Button:SetupEventHandlers()
 		if gameProcessed then return end
 		if input.UserInputType == Enum.UserInputType.MouseButton1 and self.IsEnabled then
 			self.IsPressed = true; self:UpdateVisuals()
-		end
+		end)
 	end)
 	self.MainFrame.InputEnded:Connect(function(input, gameProcessed)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -496,23 +507,25 @@ end
 
 function Button:UpdateVisuals()
 	if not self.IsEnabled then
-		self.MainFrame.BackgroundColor3 = ThemeManager:GetColor("Disabled")
+		Utilities.AnimateColor(self.MainFrame, ThemeManager:GetColor("Disabled"), 0.1)
 		self.TextLabel.TextColor3 = ThemeManager:GetColor("TextSecondary")
 		return
 	end
 	if self.IsPressed then
-		self.MainFrame.BackgroundColor3 = ThemeManager:GetColor("Active")
-		self.TextLabel.TextColor3 = ThemeManager:GetColor("Background")
+		Utilities.AnimateColor(self.MainFrame, ThemeManager:GetColor("Active"), 0.1)
+		self.TextLabel.TextColor3 = ThemeManager:GetColor("TextPrimary")
 	elseif self.IsHovering then
-		self.MainFrame.BackgroundColor3 = ThemeManager:GetColor("Hover")
+		Utilities.AnimateColor(self.MainFrame, ThemeManager:GetColor("Hover"), 0.1)
+		self.TextLabel.TextColor3 = ThemeManager:GetColor("TextPrimary")
 	else
-		self.MainFrame.BackgroundColor3 = ThemeManager:GetColor("Foreground")
+		Utilities.AnimateColor(self.MainFrame, ThemeManager:GetColor("Foreground"), 0.1)
+		self.TextLabel.TextColor3 = ThemeManager:GetColor("TextPrimary")
 	end
 end
 
 function Button:OnClick()
 	Utilities.AnimateSize(self.MainFrame, self.MainFrame.AbsoluteSize.X * 0.95, self.MainFrame.AbsoluteSize.Y * 0.95, 0.1)
-	self.Callback()
+	if self.Callback then self.Callback() end
 	Utilities.AnimateSize(self.MainFrame, self.MainFrame.AbsoluteSize.X, self.MainFrame.AbsoluteSize.Y, 0.1)
 end
 
@@ -547,6 +560,7 @@ function Toggle:CreateGUI()
 	self.TextLabel.Font = ThemeManager:Get("Font")
 	self.TextLabel.TextSize = ThemeManager:Get("FontSize")
 	self.TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+	self.TextLabel.TextYAlignment = Enum.TextYAlignment.Center
 	self:CreateToggleButton()
 end
 
@@ -575,12 +589,12 @@ end
 
 function Toggle:UpdateVisuals()
 	if self.IsEnabled then
-		self.ToggleBackground.BackgroundColor3 = ThemeManager:GetColor("Accent")
-		self.ToggleButton.BackgroundColor3 = ThemeManager:GetColor("Background")
+		Utilities.AnimateColor(self.ToggleBackground, ThemeManager:GetColor("Accent"), 0.1)
+		Utilities.AnimateColor(self.ToggleButton, ThemeManager:GetColor("Background"), 0.1)
 		Utilities.AnimatePosition(self.ToggleButton, 28, 2, 0.2)
 	else
-		self.ToggleBackground.BackgroundColor3 = ThemeManager:GetColor("Foreground")
-		self.ToggleButton.BackgroundColor3 = ThemeManager:GetColor("TextSecondary")
+		Utilities.AnimateColor(self.ToggleBackground, ThemeManager:GetColor("Foreground"), 0.1)
+		Utilities.AnimateColor(self.ToggleButton, ThemeManager:GetColor("TextSecondary"), 0.1)
 		Utilities.AnimatePosition(self.ToggleButton, 2, 2, 0.2)
 	end
 end
@@ -588,7 +602,7 @@ end
 function Toggle:Toggle()
 	self.IsEnabled = not self.IsEnabled
 	self:UpdateVisuals()
-	self.Callback(self.IsEnabled)
+	if self.Callback then self.Callback(self.IsEnabled) end
 end
 
 -- ============================================
@@ -615,16 +629,51 @@ local buttonContainer = Globals.CreateGuiElement("Frame", mainWindow.ContentFram
 buttonContainer.Size = UDim2.new(1, -20, 0, 50)
 buttonContainer.Position = UDim2.new(0, 10, 0, 10)
 buttonContainer.BackgroundTransparency = 1
-local clickButton = NovaLibrary:CreateButton("Kliknij mnie!", buttonContainer, function() print("Kliknięto!") end)
+buttonContainer.BorderSizePixel = 0
+local clickButton = NovaLibrary:CreateButton("Kliknij mnie!", buttonContainer, function() NovaLibrary:Log("Przycisk został kliknięty!", "INFO") print("Kliknięto!") end)
 clickButton.MainFrame.Size = UDim2.new(1, 0, 1, 0)
 
 local toggleContainer = Globals.CreateGuiElement("Frame", mainWindow.ContentFrame, "ToggleContainer")
 toggleContainer.Size = UDim2.new(1, -20, 0, 50)
 toggleContainer.Position = UDim2.new(0, 10, 0, 70)
 toggleContainer.BackgroundTransparency = 1
+toggleContainer.BorderSizePixel = 0
 local toggle = NovaLibrary:CreateToggle("Włącz tryb ciemny", toggleContainer, function(state)
 	if state then NovaLibrary:LoadTheme("Dark") else NovaLibrary:LoadTheme("Light") end
+	NovaLibrary:Log("Toggle state: " .. tostring(state), "INFO")
 end)
 toggle.MainFrame.Size = UDim2.new(1, 0, 1, 0)
+
+local infoLabel = Globals.CreateGuiElement("TextLabel", mainWindow.ContentFrame, "InfoLabel")
+infoLabel.Size = UDim2.new(1, -20, 0, 100)
+infoLabel.Position = UDim2.new(0, 10, 0, 130)
+infoLabel.BackgroundColor3 = ThemeManager:GetColor("Foreground")
+infoLabel.BackgroundTransparency = ThemeManager:Get("Transparency")
+infoLabel.TextColor3 = ThemeManager:GetColor("TextPrimary")
+infoLabel.Font = ThemeManager:Get("Font")
+infoLabel.TextSize = 12
+infoLabel.Text = "Witaj w NovaLibrary!\n\nTo jest przykład użycia biblioteki GUI dla Roblox.\nBiblioteka oferuje nowoczesne komponenty z efektami wizualnymi.\n\nTeraz w stylu Potassium!"
+infoLabel.TextWrapped = true
+infoLabel.TextXAlignment = Enum.TextXAlignment.Left
+infoLabel.TextYAlignment = Enum.TextYAlignment.Top
+infoLabel.Padding = UDim.new(0, 10)
+
+Globals.AddBorder(infoLabel, ThemeManager:GetColor("BorderColor"))
+Globals.AddCornerRadius(infoLabel, ThemeManager:Get("CornerRadius"))
+
+mainWindow:OnWindowClose(function()
+	NovaLibrary:Log("Okno zostało zamknięte", "INFO")
+end)
+
+mainWindow:OnWindowMinimize(function(isMinimized)
+	if isMinimized then
+		NovaLibrary:Log("Okno zostało zminimalizowane", "INFO")
+	else
+		NovaLibrary:Log("Okno zostało przywrócone", "INFO")
+	end
+end)
+
+NovaLibrary:Log("Przykład został załadowany pomyślnie!", "INFO")
+print("NovaLibrary Demo załadowana!")
 
 return NovaLibrary
