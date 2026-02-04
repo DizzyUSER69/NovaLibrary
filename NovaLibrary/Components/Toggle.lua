@@ -116,8 +116,8 @@ end
 function Toggle:UpdateVisuals()
 	if self.IsEnabled then
 		-- Przełącznik włączony
-		self.ToggleBackground.BackgroundColor3 = ThemeManager:GetColor("Active")
-		self.ToggleButton.BackgroundColor3 = ThemeManager:GetColor("TextPrimary")
+		self.ToggleBackground.BackgroundColor3 = ThemeManager:GetColor("Accent")
+		self.ToggleButton.BackgroundColor3 = ThemeManager:GetColor("Background")
 		
 		-- Animacja przesunięcia przycisku
 		Utilities.AnimatePosition(self.ToggleButton, 28, 2, 0.2)

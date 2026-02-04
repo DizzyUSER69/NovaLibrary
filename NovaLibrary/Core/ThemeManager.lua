@@ -20,9 +20,9 @@ ThemeManager.DefaultTheme = {
 	TextSecondary = Globals.RGB(150, 150, 160),  -- Pomocniczy tekst (szary)
 	
 	-- Kolory akcent
-	Accent = Globals.RGB(100, 200, 255),         -- Niebieski akcent (Potassium style)
-	AccentDark = Globals.RGB(70, 150, 220),      -- Ciemniejszy akcent
-	AccentLight = Globals.RGB(150, 220, 255),    -- Jaśniejszy akcent
+	Accent = Globals.RGB(180, 180, 180),         -- Subtelny szary akcent
+	AccentDark = Globals.RGB(120, 120, 120),      -- Ciemniejszy szary akcent
+	AccentLight = Globals.RGB(220, 220, 220),    -- Jaśniejszy szary akcent
 	
 	-- Kolory stanu
 	Success = Globals.RGB(100, 200, 100),        -- Zielony (sukces)
@@ -31,7 +31,7 @@ ThemeManager.DefaultTheme = {
 	
 	-- Kolory interakcji
 	Hover = Globals.RGB(60, 60, 80),             -- Kolor przy najechaniu
-	Active = Globals.RGB(100, 200, 255),         -- Kolor aktywny
+	Active = Globals.RGB(100, 100, 100),         -- Kolor aktywny (ciemniejszy szary)
 	Disabled = Globals.RGB(80, 80, 90),          -- Kolor wyłączony
 	
 	-- Granice i obramowania
@@ -171,7 +171,7 @@ ThemeManager.Themes = {
 		Surface = Globals.RGB(230, 230, 240),
 		TextPrimary = Globals.RGB(30, 30, 40),
 		TextSecondary = Globals.RGB(100, 100, 110),
-		Accent = Globals.RGB(100, 150, 255),
+		Accent = Globals.RGB(150, 150, 150), -- Szary akcent dla jasnego motywu
 		BorderColor = Globals.RGB(180, 180, 190),
 		Hover = Globals.RGB(200, 200, 210),
 		Disabled = Globals.RGB(180, 180, 190),
@@ -183,7 +183,7 @@ ThemeManager.Themes = {
 		AccentDark = Globals.RGB(70, 150, 70),
 		AccentLight = Globals.RGB(150, 220, 150),
 		Active = Globals.RGB(100, 200, 100),
-	},
+	}, -- Pozostawiamy zielony jako opcję, ale domyślny będzie szary
 	
 	-- Motyw z czerwonym akcentem
 	Red = {
@@ -191,7 +191,7 @@ ThemeManager.Themes = {
 		AccentDark = Globals.RGB(200, 70, 70),
 		AccentLight = Globals.RGB(255, 150, 150),
 		Active = Globals.RGB(255, 100, 100),
-	},
+	}, -- Pozostawiamy czerwony jako opcję, ale domyślny będzie szary
 }
 
 -- Funkcja do załadowania predefiniowanego motywu

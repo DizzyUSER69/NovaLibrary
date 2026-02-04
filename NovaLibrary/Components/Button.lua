@@ -132,13 +132,13 @@ function Button:OnClick()
 	Globals.Log("Przycisk '" .. self.Text .. "' został kliknięty", "DEBUG")
 	
 	-- Animacja wciśnięcia
-	Utilities.AnimateSize(self.MainFrame, self.MainFrame.AbsoluteSize.X - 4, self.MainFrame.AbsoluteSize.Y - 4, 0.1)
+	Utilities.AnimateSize(self.MainFrame, self.MainFrame.AbsoluteSize.X * 0.95, self.MainFrame.AbsoluteSize.Y * 0.95, 0.1)
 	
 	-- Wykonaj callback
 	self.Callback()
 	
 	-- Animacja powrotu
-	Utilities.AnimateSize(self.MainFrame, self.MainFrame.AbsoluteSize.X + 4, self.MainFrame.AbsoluteSize.Y + 4, 0.1)
+	Utilities.AnimateSize(self.MainFrame, self.MainFrame.AbsoluteSize.X, self.MainFrame.AbsoluteSize.Y, 0.1)
 end
 
 -- ============================================
