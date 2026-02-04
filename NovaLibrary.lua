@@ -111,8 +111,19 @@ Globals.TweenService = game:GetService("TweenService")
 Globals.Players = game:GetService("Players")
 
 -- Ulepszony dostęp do LocalPlayer i PlayerGui
-Globals.LocalPlayer = Globals.Players.LocalPlayer
-Globals.PlayerGui = Globals.LocalPlayer and Globals.LocalPlayer:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
+Globals.LocalPlayer = Globals.Players.LocalPlayer or (Globals.RunService:IsClient() and Globals.Players.LocalPlayer)
+
+-- Funkcja do bezpiecznego pobierania PlayerGui
+local function getPlayerGui()
+	if Globals.LocalPlayer then
+		return Globals.LocalPlayer:WaitForChild("PlayerGui", 10) -- Czekaj do 10 sekund na PlayerGui
+	else
+		-- Jeśli nie ma LocalPlayer (np. w CoreGui), spróbuj użyć CoreGui
+		return game:GetService("CoreGui")
+	end
+end
+
+Globals.PlayerGui = getPlayerGui()
 
 -- ============================================
 -- ZARZĄDZANIE MOTYWAMI (ThemeManager Module)
