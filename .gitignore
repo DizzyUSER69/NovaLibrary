@@ -1,0 +1,23 @@
+# Roblox Studio temporary files
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+
+# Rojo files
+*.json
+*.project.json
+
+# macOS files
+.DS_Store
+
+# Windows files
+thumbs.db
+
+# Logs
+*.log
+
+# Other temporary files
+*~
+*.bak
+*.tmp
